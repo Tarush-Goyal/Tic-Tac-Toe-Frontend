@@ -16,7 +16,7 @@ const Home = () => {
     const options = {
       url: `http://${process.env.REACT_APP_BACKEND_URL}/join_room`,
       method: "POST",
-      withCredentials: true,
+      withCredentials: false,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json;charset=UTF-8",
