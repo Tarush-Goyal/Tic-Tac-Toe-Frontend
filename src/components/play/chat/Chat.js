@@ -1,51 +1,43 @@
-/*IMPORTS*/
-import React ,{useState , useEffect , useContext} from 'react'
-import Input from './input/Input'
-import Message from './Messages/Message'
-import {UserContext} from "../../../UserContext"
+import React, { useState, useEffect, useContext } from "react";
+import Input from "./input/Input";
+import Message from "./Messages/Message";
+import { UserContext } from "../../../UserContext";
 
-const Chat = ({socket , room_id}) => {
-    
-    const {user , setUser} = useContext(UserContext);
-    //to store in input FORM
-    const [message, setMessage] = useState('');
-    //array to store message
-    const [messages, setMessages] = useState([]);
-   
-    //function that sends message to server
-    const sendMessage = (e)=>{
-        e.preventDefault();
-        console.log(message);
-        //emit messsage to sokcet server
-        const msg = {
-            message,
-            name: user.name ,
-            user_id:user.id ,
-            room_id 
-            };
+const Chat = ({ socket, room_id }) => {
+  const { user, setUser } = useContext(UserContext);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
-        // console.log(msg);
-        socket.emit('sendMessage' , msg );
-        setMessage('')
-    }
+  const sendMessage = (e) => {
+    e.preventDefault();
+    console.log(message);
+    const msg = {
+      message,
+      name: user.name,
+      user_id: user.id,
+      room_id,
+    };
 
-    useEffect(() => {
-        socket.on('messageReceived', message => {
-            // console.log('Agya Agya Maal Agya',message);
-            setMessages(msgs => [ ...msgs, message ]);
-          });
-    }, [])
+    socket.emit("sendMessage", msg);
+    setMessage("");
+  };
 
-    return (
-        <div>
-            <Message Messages={messages} user={user} />
-            <Input 
-                message= {message}
-                setMessage= {setMessage}
-                sendMessage= {sendMessage}
-            />
-        </div>
-    )
-}
+  useEffect(() => {
+    socket.on("messageReceived", (message) => {
+      setMessages((msgs) => [...msgs, message]);
+    });
+  }, []);
 
-export default Chat
+  return (
+    <div>
+      <Message Messages={messages} user={user} />
+      <Input
+        message={message}
+        setMessage={setMessage}
+        sendMessage={sendMessage}
+      />
+    </div>
+  );
+};
+
+export default Chat;
